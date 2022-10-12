@@ -1,6 +1,6 @@
 import { Component } from "react";
-import axios from 'axios';
 import { Loader } from "./Loader/Loader";
+import { fetchImages } from 'API';
 import { ImageGallery } from './ImageGallery/ImageGallery'
 // import css from './App.module.css';
 
@@ -10,32 +10,29 @@ export class App extends Component {
         loading: false,
         error: null,
         page: 1,
-        request: '',
+        request: 'cats',
         total: null,
         isOpenModal: false,
         largeImageURL: '',
     }
 
     componentDidMount() {
-        this.fetchImages();
-    }
-
-    fetchImages() {
-        const { page } = this.state;
-        this.setState({loading: true});
-
-        const API_KEY = '29400670-7ab87ece5bce46682a5958f07';
-        axios.get(`https://pixabay.com/api/?q=cat&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`)
-            .then(({data}) => 
-                this.setState(({items}) => {
-                    return {
-                        items: [...items, ...data.hits]
-                    }
-                }))
-            .catch(error => {
-                this.setState({error})
-            })
-            .finally(() => this.setState({loading: false}))
+        const { page, request } = this.state;
+        this.setState({ loading: true });
+        
+        setTimeout(() => {
+            fetchImages(request, page)
+                .then(data =>
+                    this.setState(({ items }) => {
+                        return {
+                            items: [...items, ...data.hits]
+                        }
+                    }))
+                .catch(error => {
+                    this.setState({ error })
+                })
+                .finally(() => this.setState({ loading: false }))
+        }, 500);
     }
 
     
