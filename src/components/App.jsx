@@ -4,6 +4,7 @@ import { fetchImages } from 'API';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { Searchbar } from "./Searchbar/Searchbar";
+import { Modal } from "./Modal/Modal";
 import css from './App.module.css';
 
 export class App extends Component {
@@ -13,7 +14,7 @@ export class App extends Component {
         error: null,
         page: 1,
         request: '',
-        isOpenModal: false,
+        modalOpen: false,
         largeImageURL: '',
     }
 
@@ -40,11 +41,6 @@ export class App extends Component {
             return { page: page + 1 }
         })
     };
-
-    goLargeImg = img => {
-    this.setState({ largeImageURL: img });
-    // this.onModalOpen();
-    };
     
     handleFormSubmit = request => {
         if (this.state.request !== request) {
@@ -52,11 +48,18 @@ export class App extends Component {
         }
     };
 
+    modalOpen = () => this.setState({ modalOpen: true });
+    modalClose = () => this.setState({ modalOpen: false });
+
+    goLargeImg = img => {
+        this.setState({ largeImageURL: img });
+        this.modalOpen();
+    };
     
     render() {
-        const { items, loading, error } = this.state;
+        const { items, loading, error, modalOpen, largeImageURL } = this.state;
         const isItems = Boolean(items.length);
-        const { loadMore, handleFormSubmit } = this;
+        const { loadMore, handleFormSubmit, modalClose } = this;
         return (
             <div className={css.App}>
                 <Searchbar onSubmit={handleFormSubmit} />
@@ -64,6 +67,7 @@ export class App extends Component {
                 {error && <p>Restart page or modify the request</p>}
                 {isItems && <ImageGallery items={items} goLargeImg={this.goLargeImg} />}
                 {isItems && <Button onClick={loadMore} />}
+                {modalOpen && <Modal largeImageURL={largeImageURL} modalClose={modalClose} />}
             </div>
       )
   }
