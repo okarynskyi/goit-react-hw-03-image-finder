@@ -3,6 +3,7 @@ import { Loader } from "./Loader/Loader";
 import { fetchImages } from 'API';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
+import { Searchbar } from "./Searchbar/Searchbar";
 import css from './App.module.css';
 
 export class App extends Component {
@@ -11,26 +12,9 @@ export class App extends Component {
         loading: false,
         error: null,
         page: 1,
-        request: 'fish',
-        total: null,
+        request: '',
         isOpenModal: false,
         largeImageURL: '',
-    }
-
-    componentDidMount() {
-        const { page, request } = this.state;
-        this.setState({ loading: true });
-        fetchImages(request, page)
-            .then(data =>
-                this.setState(() => {
-                    return {
-                        items: [...data.hits]
-                    }
-                }))
-            .catch(error => {
-                this.setState({ error })
-            })
-            .finally(() => this.setState({ loading: false }))
     }
 
     componentDidUpdate(_, prevState) {
@@ -60,19 +44,26 @@ export class App extends Component {
     goLargeImg = img => {
     this.setState({ largeImageURL: img });
     // this.onModalOpen();
-  };
+    };
+    
+    handleFormSubmit = request => {
+        if (this.state.request !== request) {
+            this.setState({ request, page: 1, items: [] });
+        }
+    };
 
     
     render() {
         const { items, loading, error } = this.state;
-        const isPosts = Boolean(items.length);
-        const { loadMore } = this;
+        const isItems = Boolean(items.length);
+        const { loadMore, handleFormSubmit } = this;
         return (
             <div className={css.App}>
+                <Searchbar onSubmit={handleFormSubmit} />
                 {loading && <Loader />}
-                {error && <p>Restart page</p>}
-                {isPosts && <ImageGallery items={items} goLargeImg={this.goLargeImg} />}
-                {isPosts && <Button onClick={loadMore} />}
+                {error && <p>Restart page or modify the request</p>}
+                {isItems && <ImageGallery items={items} goLargeImg={this.goLargeImg} />}
+                {isItems && <Button onClick={loadMore} />}
             </div>
       )
   }
