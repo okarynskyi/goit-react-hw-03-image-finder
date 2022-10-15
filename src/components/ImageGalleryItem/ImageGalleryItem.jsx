@@ -11,7 +11,12 @@ export function ImageGalleryItem({ items, goLargeImg }) {
 }
 
 ImageGalleryItem.propTypes = {
-  img: PropTypes.string,
-  largeImg: PropTypes.string,
-  id: PropTypes.number,
+    items: PropTypes.arrayOf(
+        PropTypes.shape({
+            webformatURL: PropTypes.string.isRequired,
+            largeImageURL: PropTypes.string.isRequired,
+            id: PropTypes.number.isRequired,
+        })
+    ),
+    goLargeImg: PropTypes.func.isRequired,
 };
