@@ -10,7 +10,7 @@ export class App extends Component {
         loading: false,
         error: null,
         page: 1,
-        request: 'cats',
+        request: 'fish',
         total: null,
         isOpenModal: false,
         largeImageURL: '',
@@ -20,31 +20,34 @@ export class App extends Component {
         const { page, request } = this.state;
         this.setState({ loading: true });
         
-        setTimeout(() => {
             fetchImages(request, page)
                 .then(data =>
-                    this.setState(({ items }) => {
+                    this.setState(prevState => {
                         return {
-                            items: [...items, ...data.hits]
+                            items: [ ...data.hits]
                         }
                     }))
                 .catch(error => {
                     this.setState({ error })
                 })
                 .finally(() => this.setState({ loading: false }))
-        }, 500);
     }
+
+    goLargeImg = img => {
+    this.setState({ largeImageURL: img });
+    // this.onModalOpen();
+  };
 
     
     render() {
-        const { items, loading, error, page } = this.state;
+        const { items, loading, error } = this.state;
         const isPosts = Boolean(items.length);
         return (
             <div>
                 {loading && <Loader />}
                 {error && <p>Restart page</p>}
                 {isPosts && <ImageGallery items={items} goLargeImg={this.goLargeImg} />}
-          </div>
+            </div>
       )
   }
 }
