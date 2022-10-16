@@ -4,21 +4,22 @@ import PropTypes from 'prop-types';
 
 export function ImageGallery({ items, goLargeImg })  {
   return (
-        <ul className={css.ImageGallery}>
-            <ImageGalleryItem
-                items={items}
-                goLargeImg={goLargeImg}
+      <ul className={css.ImageGallery}>
+          {items.map((item) => (
+             <ImageGalleryItem
+                  key={item.id}
+                  item={item}
+                  goLargeImg={goLargeImg}
               />
-        </ul>
+          ))}
+      </ul>
     );
   }
 
 ImageGallery.propTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
-            webformatURL: PropTypes.string.isRequired,
-            largeImageURL: PropTypes.string.isRequired,
-            id: PropTypes.number.isRequired,
+            id: PropTypes.number.isRequired
         })
     ),
     goLargeImg: PropTypes.func.isRequired,
